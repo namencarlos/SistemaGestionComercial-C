@@ -4,69 +4,86 @@
 #include <windows.h>
 
 /*prototipo de funciones*/
-void crear();
-void consultar();
-void modificar();
-void cargar();
-void baja();
-void ordenar();
+void altaProducto();
+void consultarProducto();
+void modificarProducto();
+void bajaProducto();
+void ingresoStock();
+void salidaStock();
+void listarProductos();
+
 void barra_horizontal();
 void menu();/*Prototipo de la funcion menu, la cual solo nos va a mostrar las distintas opciones con las que cuenta el programa*/
 
+/*Estructuras principales*/
+    struct Producto
+    {  
+        int codigo;
+        char descripcion[50];
+        float precioCompra;
+        float precioVenta;
+        int stock;
+        int stockMinimo;
+        bool borrado;
+    };
+
 /*programa Principal*/
-main()
+int main()
 {
 	int opcion;
-	system("color E1");
-	barra_horizontal();
-	menu();
-	printf("\n");
-	printf("Por favor, elija una opcion: ");
-	scanf("%d",&opcion);
-	while(opcion!=0)
+	do
 	{
-		if(opcion == 1)
+		system("cls");
+		system("color E1");
+		
+		barra_horizontal();
+		menu();
+		
+		printf("\nSeleccione una opcion: ");
+		scanf("%d",&opcion);
+		
+		switch(opcion)
 		{
-			crear();
-		}
-		else if(opcion == 2)
-		      {
-		        consultar();
-			  }
-			 else if(opcion == 3)
-			       {
-			 	     modificar();
-			       }  
-			      else if(opcion == 4)
-			            {
-			            	cargar();
-                        }
-			            
-			           else if(opcion == 5)
-			                 {
-			                 	baja();
-                                //return 0;
-                              }
-                            else if(opcion == 6)
-			                 {
-			                 	ordenar();
-                                //return 0;
-                              }  
-    system("cls");
-    barra_horizontal();
-	menu();
-	printf("\nPor favor, elija una opcion: ");
-	scanf("%d",&opcion);
-					            
-	}
+			case 1:
+				altaProducto();
+				break;
+				
+			case 2:
+				consultarProducto();
+				break;
+				
+			case 3:
+				modificarProducto();
+				break;
+			
+			case 4:
+				bajaProducto();
+				break;
+				
+			case 5:
+				ingresoStock();
+				break;
+				
+			case 6:
+				salidaStock();
+				break;
+				
+			case 7:
+				listarProductos();
+				break;
+				
+			case 0:
+				printf("\nSaliendo del sistema...");
+				break;
+				
+			default:
+				printf("\nOpcion invalida");
+				getch();
+		}		
+	}while(opcion!=0);
+	
 	return 0;
 }
-
-
-
-
-
-
 
 /*Funciones para el menú e interfaz visual*/
 void barra_horizontal()
@@ -84,187 +101,158 @@ void barra_horizontal()
 }
 void menu()
 {
-	printf("\n\t\tMenu de opciones\n");
-	printf("\n\t1-Crear Listado de Concurrentes");
-	printf("\n\t2-Consultar Listado de Concurrentes");
-	printf("\n\t3-Modificar Listado de Concurrentes ");
-	printf("\n\t4-Cargar Nuevo Concurrente");
-	printf("\n\t5-Baja de Concurrente");
-	printf("\n\t6-Ordenar Listado de Concurrentes");
-	printf("\n\t0-Salir");
-	printf("\n\n\n");
+	printf("\n");
+	printf("========================================\n");
+	printf("    SISTEMA DE GESTION COMERCIAL v0.2\n");
+	printf("========================================\n");
+	
+	printf("1. Alta de Producto\n");
+	printf("2. Consultar Productos\n");
+	printf("3. Modificar productos\n");
+	printf("4. Baja de producto\n");
+	printf("5. Ingreso de stock\n");
+	printf("6. Salida de Stock\n");
+	printf("7. Listar productos\n");
+	printf("0. Salir\n");
 }
+
 /*------------------------------------------------------*/
 /*Funciones de proceso*/
-void crear()
+void altaProducto()
 {
 	system("cls");
-    struct FecNac
-    {
-	    int dd,mm,aa;
-    };
-    struct concurrentes
-    {  
-        int dni,edad,numafil;
-        char apeynom[30];
-        float arancel;
-        struct FecNac fec;
-        bool borrado;
-    };
-
-    struct concurrentes reg;
+    Producto producto;
     FILE *arch;
     int n,i;
 
     /*Alta*/
-    printf("Ingrese la cantidad de concurrentes: ");
+    printf("Ingrese la cantidad de productos: ");
     scanf("%d",&n);
-    //if(n!=)
-    arch=fopen("concurrentes.dat","w+b");
-
-    for (i=0;i<n;i++)
+    
+    arch=fopen("productos.dat","a+b");
+    
+    if(arch==NULL)
     {
-	    printf("\n\nIngrese los datos del concurrente\n\n");
-        printf("Nro de DNI: ");
-        scanf("%d",&reg.dni);
+    	printf("Error al abrir el archivo");
+    	getch();
+    	return;
+	}
+    
+    for (i = 0; i < n ; i++)
+    {
+	    printf("\n\nProducto\n\n");
+        do
+        {
+        	printf("Codigo: ");
+        	scanf("%d",&producto.codigo);
+		}while(producto.codigo <= 0);
+		
+		_flushall();
+        
+        printf("Descripcion: ");
+        fgets(producto.descripcion,sizeof(producto.descripcion),stdin);
         _flushall();
-        printf("Nro de Afiliado: ");
-        scanf("%d",&reg.numafil);
-        _flushall();
-        printf("Apellido y Nombre: ");
-        gets(reg.apeynom);
-        printf("Fecha de nacimiento\n");
-        printf("DD: ");
-        scanf("%d",&reg.fec.dd);
-        printf("MM: ");
-        scanf("%d",&reg.fec.mm);
-        printf("AAAA: ");
-        scanf("%d",&reg.fec.aa);
-        printf("Edad : ");
-        scanf("%d",&reg.edad);
-        printf("Valor de prestacion : ");
-        scanf("%f",&reg.arancel);
-        reg.borrado=false;
-        fwrite(&reg,sizeof(reg),1,arch);
+        
+        do
+        {
+        	printf("Precio de Compra: ");
+        	scanf("%f",&producto.precioCompra);
+		}while(producto.precioCompra <= 0);
+        
+        do
+        {
+        	printf("Precio de Venta: ");
+        	scanf("%f",&producto.precioVenta);
+		}while(producto.precioVenta <= 0);
+        
+        do
+        {
+        	printf("Stock: ");
+        	scanf("%d",&producto.stock);
+		}while(producto.stock < 0);
+        
+        do
+        {
+        	printf("Stock Minimo: ");
+        	scanf("%d",&producto.stockMinimo);
+		}while(producto.stockMinimo < 0);
+        
+        producto.borrado=false;
+        fwrite(&producto,sizeof(producto),1,arch);
      }
  fclose(arch);
 system("PAUSE");
 }
 		
-void consultar()
-{
-	system("cls");
-	printf("Usted esta por consultar un registro");
-	struct FecNac
-    {
-	    int dd,mm,aa;
-    };
-    struct concurrentes
-    {  
-        int dni;
-		int edad;
-		int numafil;
-        char apeynom[30];
-        float arancel;
-        struct FecNac fec;
-        bool borrado;
-    };
-	struct concurrentes reg;
-	FILE *arch;
-	arch=fopen("concurrentes.dat","r+b");
-    fread(&reg,sizeof(reg),1,arch);
-    printf("\n\nListado de Concurrentes Activos\n\n");
-    while (!feof(arch))
-    {
-       printf("Nro de DNI:%d\n",reg.dni);
-       printf("Nro de Afiliado: %d\n",reg.numafil);
-       printf("Apellido y Nombre:%s\n",reg.apeynom); 
-       printf("Fecha de nacimiento:%d/%d/%d\n",reg.fec.dd,reg.fec.mm,reg.fec.aa);
-       printf("Edad : %d\n",reg.edad);
-       printf("Valor de prestacion :%.2f\n",reg.arancel);
-       fread(&reg,sizeof(reg),1,arch);
-       printf("--------------------------------\n");
-    }
-    fclose(arch);
-	system("PAUSE");
-}
-void modificar()
-{
-	struct FecNac
-    {
-	    int dd,mm,aa;
-    };
-    struct concurrentes
-    {  
-        int dni,edad,numafil;
-        char apeynom[30];
-        float arancel;
-        struct FecNac fec;
-        bool borrado;
-    };
-	system("cls");
-	printf("Usted esta por modificar un registro");
-	struct concurrentes reg;
-    FILE *arch;
-    bool band;
-    int leg;
-    system("CLS");
-    printf("Ingrese el dni a dar de baja= ");
-    scanf("%d",&leg);
-    arch=fopen("concurrentes.dat","r+b");
-    fread(&reg,sizeof(reg),1,arch);
-    band=false;
-    while(feof(arch)==0 && band==false)
-    {
-        if (reg.dni==leg && reg.borrado==false)
-    {
-        reg.borrado=true;
-        fseek(arch,-static_cast<long>(sizeof(reg)),SEEK_CUR);
-        fwrite(&reg,sizeof(reg),1,arch);
-        printf("Registro dado de baja\n\n");
-        getch();
-        band=true;
-    }
-    else
-    {
-        fread(&reg,sizeof(reg),1,arch);
-    }
-    }
-    rewind(arch);
-    fread(&reg,sizeof(reg),1,arch);
-    while(!feof(arch))
-    {
-       if (reg.borrado==false)
-    {
-        printf("Nro de DNI:%d\n",reg.dni);
-        printf("N° de Afiliado: %d\n",reg.numafil);
-        printf("Apellido y Nombre:%s\n",reg.apeynom); 
-        printf("Fecha de nacimiento:%d/%d/%d\n",reg.fec.dd,reg.fec.mm,reg.fec.aa);
-        printf("Edad : %d\n",reg.edad);
-        printf("Valor de prestacion :%.2f\n",reg.arancel);
-        fread(&reg,sizeof(reg),1,arch);
-        printf("--------------------------------\n");
-    }
-    fread(&reg,sizeof(reg),1,arch);
-    }
-    fclose(arch);
-	system("PAUSE");
-}
-void cargar()
+void consultarProducto()
 {
 	system("cls");
 	printf("Usted esta por cargar un registro");
 	system("PAUSE");
 }
-void baja()
+void modificarProducto()
+{
+	system("cls");
+	printf("Usted esta por cargar un registro");
+	system("PAUSE");
+}
+void bajaProducto()
 {
 	system("cls");
 	printf("Usted esta por dar de baja un registro");
 	getch();
 }
-void ordenar()
+void ingresoStock()
 {
 	system("cls");
 	printf("Usted esta por ordenar el registro");
 	system("PAUSE");
+}
+
+void salidaStock()
+{
+	system("cls");
+	printf("Usted esta por ordenar el registro");
+	system("PAUSE");
+}
+
+
+void listarProductos()
+{
+    system("cls");
+
+    Producto producto;
+    FILE *arch;
+
+    arch = fopen("productos.dat","rb");
+
+    if(arch == NULL)
+    {
+        printf("No existen productos cargados.\n");
+        system("PAUSE");
+        return;
+    }
+
+    printf("========================================\n");
+    printf("       LISTADO DE PRODUCTOS\n");
+    printf("========================================\n\n");
+
+    while(fread(&producto,sizeof(producto),1,arch)==1)
+    {
+        if(producto.borrado==false)
+        {
+            printf("Codigo: %d\n",producto.codigo);
+            printf("Descripcion: %s",producto.descripcion);
+            printf("Precio Compra: %.2f\n",producto.precioCompra);
+            printf("Precio Venta : %.2f\n",producto.precioVenta);
+            printf("Stock        : %d\n",producto.stock);
+            printf("Stock Minimo : %d\n",producto.stockMinimo);
+
+            printf("----------------------------------------\n");
+        }
+    }
+
+    fclose(arch);
+
+    system("PAUSE");
 }
