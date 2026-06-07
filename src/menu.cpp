@@ -1,4 +1,4 @@
-/*Librerias necesarias para el programa*/
+/*Librerias*/
 #include <conio.h>
 #include <stdio.h>
 #include <windows.h>
@@ -161,7 +161,9 @@ void consultar()
     };
     struct concurrentes
     {  
-        int dni,edad,numafil;
+        int dni;
+		int edad;
+		int numafil;
         char apeynom[30];
         float arancel;
         struct FecNac fec;
@@ -217,7 +219,7 @@ void modificar()
         if (reg.dni==leg && reg.borrado==false)
     {
         reg.borrado=true;
-        fseek(arch,- sizeof(reg),SEEK_CUR);
+        fseek(arch,-static_cast<long>(sizeof(reg)),SEEK_CUR);
         fwrite(&reg,sizeof(reg),1,arch);
         printf("Registro dado de baja\n\n");
         getch();
